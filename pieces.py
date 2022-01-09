@@ -1,18 +1,19 @@
 import operator
+import pygame
+from utils import *
 
-BLACK = 0
-WHITE = 1
 
 class BasePiece:
     def __init__(self, color, move_set, position, board):
         self.color = color
-        self.img_path = f"{'white' if color==WHITE else 'black'}-{self.__class__.__name__.lower()}"
+        self.img_path = f"assets/{'white' if color == WHITE else 'black'}-{self.__class__.__name__.lower()}.png"
+        self.image = pygame.image.load(self.img_path)
         self.move_set = move_set
         self.position = position
         self.board = board
 
     @staticmethod
-    def is_on_board(self, new_position):
+    def is_on_board(new_position):
         x, y = new_position
 
         # checks if piece is not out of bounds
@@ -68,11 +69,16 @@ class BasePiece:
 
         return True
 
+    def draw(self, window):
+        x = self.position[0] * SQUARE_SIZE
+        y = HEIGHT - (self.position[1] + 1) * SQUARE_SIZE
+        window.blit(self.image, (x, y))
+
 
 class Pawn(BasePiece):
     # hardcoded move set that is dependant on color
     def __init__(self, color, position, board):
-        if self.color == WHITE:
+        if color == WHITE:
             move_set = [(0, 1), (1, 1), (-1, 1), (0, 2)]
         else:
             move_set = [(0, -1), (-1, -1), (1, -1), (0, -2)]
@@ -102,12 +108,11 @@ class Pawn(BasePiece):
 
 
 class Rook(BasePiece):
-    move_set = []
-    for i in range(1, 8):
-        move_set.extend([(i, 0), (-i, 0), (0, i), (0, -i)])
-
     def __init__(self, color, position, board):
-        super().__init__(color, self.move_set, position, board)
+        move_set = []
+        for i in range(1, 8):
+            move_set.extend([(i, 0), (-i, 0), (0, i), (0, -i)])
+        super().__init__(color, move_set, position, board)
 
     def validate_move(self, new_position):
         (x, y) = (new_position[0] - self.position[0], new_position[1] - self.position[1])
@@ -122,12 +127,11 @@ class Rook(BasePiece):
 
 
 class Bishop(BasePiece):
-    move_set = []
-    for i in range(1, 8):
-        move_set.extend([(i, i), (-i, i), (-i, -i), (i, -i)])
-
     def __init__(self, color, position, board):
-        super().__init__(color, self.move_set, position, board)
+        move_set = []
+        for i in range(1, 8):
+            move_set.extend([(i, i), (-i, i), (-i, -i), (i, -i)])
+        super().__init__(color, move_set, position, board)
 
     def validate_move(self, new_position):
         (x, y) = (new_position[0] - self.position[0], new_position[1] - self.position[1])
@@ -142,11 +146,10 @@ class Bishop(BasePiece):
 
 
 class Knight(BasePiece):
-    # hardcoded move set
-    move_set = [(-1, 2), (1, 2), (-2, 1), (2, 1), (-2, -1), (2, -1), (-1, -2), (1, -2)]
-
     def __init__(self, color, position, board):
-        super().__init__(color, self.move_set, position, board)
+        # hardcoded move set
+        move_set = [(-1, 2), (1, 2), (-2, 1), (2, 1), (-2, -1), (2, -1), (-1, -2), (1, -2)]
+        super().__init__(color, move_set, position, board)
 
     def validate_move(self, new_position):
         (x, y) = (new_position[0] - self.position[0], new_position[1] - self.position[1])
@@ -155,12 +158,11 @@ class Knight(BasePiece):
 
 
 class Queen(BasePiece):
-    move_set = []
-    for i in range(1, 8):
-        move_set.extend([(i, 0), (-i, 0), (0, i), (0, -i), (i, i), (-i, i), (-i, -i), (i, -i)])
-
     def __init__(self, color, position, board):
-        super().__init__(color, self.move_set, position, board)
+        move_set = []
+        for i in range(1, 8):
+            move_set.extend([(i, 0), (-i, 0), (0, i), (0, -i), (i, i), (-i, i), (-i, -i), (i, -i)])
+        super().__init__(color, move_set, position, board)
 
     def validate_move(self, new_position):
         (x, y) = (new_position[0] - self.position[0], new_position[1] - self.position[1])
@@ -177,10 +179,9 @@ class Queen(BasePiece):
 
 
 class King(BasePiece):
-    move_set = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]
-
     def __init__(self, color, position, board):
-        super().__init__(color, self.move_set, position, board)
+        move_set = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+        super().__init__(color, move_set, position, board)
 
     def validate_move(self, new_position):
         (x, y) = (new_position[0] - self.position[0], new_position[1] - self.position[1])

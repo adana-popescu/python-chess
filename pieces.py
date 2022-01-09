@@ -1,10 +1,12 @@
 import operator
 
+BLACK = 0
+WHITE = 1
 
 class BasePiece:
     def __init__(self, color, move_set, position, board):
         self.color = color
-        self.img_path = f"{color}-{self.__class__.__name__.lower()}"
+        self.img_path = f"{'white' if color==WHITE else 'black'}-{self.__class__.__name__.lower()}"
         self.move_set = move_set
         self.position = position
         self.board = board
@@ -70,7 +72,7 @@ class BasePiece:
 class Pawn(BasePiece):
     # hardcoded move set that is dependant on color
     def __init__(self, color, position, board):
-        if self.color == "white":
+        if self.color == WHITE:
             move_set = [(0, 1), (1, 1), (-1, 1), (0, 2)]
         else:
             move_set = [(0, -1), (-1, -1), (1, -1), (0, -2)]
@@ -91,9 +93,9 @@ class Pawn(BasePiece):
         if y == 2 or y == -2:
             if not self.validate_vertically(new_position, x, y):
                 return False
-            if self.color == 'white' and self.position[0] != 1:
+            if self.color == WHITE and self.position[0] != 1:
                 return False
-            elif self.color == 'black' and self.position[0] != 6:
+            elif self.color == BLACK and self.position[0] != 6:
                 return False
 
         return True

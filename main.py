@@ -1,6 +1,6 @@
 from board import Board
 import pygame
-from utils import WIDTH, HEIGHT
+from utils import WIDTH, HEIGHT, WHITE
 
 FPS = 60
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -16,6 +16,11 @@ def main():
 
     while run:
         clock.tick(FPS)
+        pygame.display.set_caption(f'Chess - {"white" if board.turn == WHITE else "black"} moves')
+
+        if board.game_ended:
+            run = False
+            print(f'\n{"White" if board.turn == WHITE else "Black"} won!')
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -32,9 +37,6 @@ def main():
                 if piece is not None:
                     piece.draw(WINDOW)
 
-        # if ok:
-        #     # board.move_piece(0, 1, (0, 2))
-        #     # ok=0
         pygame.display.update()
 
 

@@ -33,38 +33,57 @@ class BasePiece:
 
         return True
 
-    def validate_horizontally(self, new_position, x, y):
+    def validate_horizontally(self, new_position):
+        # if the move is not horizontal
+        if self.position[1] != new_position[1]:
+            return False
+
         # checks if there are no other pieces placed between the starting and ending position
-        for i in range(min(self.position[0], new_position[0]), max(self.position[0], new_position[0])):
-            if self.board[i][0] is not None:
+        for i in range(min(self.position[0], new_position[0]) + 1, max(self.position[0], new_position[0])):
+            if self.board[i][self.position[1]] is not None:
                 return False
 
         # checks if the ending position is either empty or of the opposite color
-        if self.board[new_position[0]][0].color == self.color:
+        if self.board[new_position[0]][new_position[1]] is not None and \
+                self.board[new_position[0]][new_position[1]].color == self.color:
             return False
 
         return True
 
-    def validate_vertically(self, new_position, x, y):
+    def validate_vertically(self, new_position):
+        # if the move is not vertical
+        if self.position[0] != new_position[0]:
+            return False
+
         # checks if there are no other pieces placed between the starting and ending position
-        for i in range(min(self.position[1], new_position[1]), max(self.position[1], new_position[1])):
-            if self.board[0][i] is not None:
+        for i in range(min(self.position[1], new_position[1]) + 1, max(self.position[1], new_position[1])):
+            if self.board[self.position[0]][i] is not None:
                 return False
 
         # checks if the ending position is either empty or of the opposite color
-        if self.board[0][new_position[1]].color == self.color:
+        if self.board[new_position[0]][new_position[1]] is not None and \
+                self.board[new_position[0]][new_position[1]].color == self.color:
             return False
 
         return True
 
     def validate_diagonally(self, new_position, x, y):
+        # if the move is not diagonal
+        if self.position[0] == new_position[0] or self.position[1] == new_position[1]:
+            return False
+
+        sign_x = x // (abs(x))
+        sign_y = y // (abs(y))
+
         # checks if there are no other pieces placed between the starting and ending position
-        for i in range(min(self.position[0], new_position[0]), max(self.position[0], new_position[0])):
-            if self.board[i][i] is not None:
+        for i, j in zip(range(self.position[0] + sign_x, new_position[0], sign_x),
+                        range(self.position[1] + sign_y, new_position[1], sign_y)):
+            if self.board[i][j] is not None:
                 return False
 
         # checks if the ending position is either empty or of the opposite color
-        if self.board[0][new_position[1]].color == self.color:
+        if self.board[new_position[0]][new_position[1]] is not None and \
+                self.board[new_position[0]][new_position[1]].color == self.color:
             return False
 
         return True
@@ -93,19 +112,24 @@ class Pawn(BasePiece):
         if not self.basic_validate(new_position, x, y):
             return False
 
+        # if the pawn tries to capture vertically
+        if ((x, y) == (0, 1) or (x, y) == (0, -1)) and self.board[new_position[0]][new_position[1]] is not None:
+            return False
+
         # checks if it's moving diagonally to capture a piece
         if x != 0 and y != 0:
             if self.board[new_position[0]][new_position[1]] is not None and \
-                    self.board[new_position[0]][new_position[1]].color == self.color:
+                    self.board[new_position[0]][new_position[1]].color == self.color or \
+                    self.board[new_position[0]][new_position[1]] is None:
                 return False
 
         # checks if it's in its' starting position in order to move two squares
         if y == 2 or y == -2:
-            if not self.validate_vertically(new_position, x, y):
+            if not self.validate_vertically(new_position):
                 return False
-            if self.color == WHITE and self.position[0] != 1:
+            if self.color == WHITE and self.position[1] != 1:
                 return False
-            elif self.color == BLACK and self.position[0] != 6:
+            elif self.color == BLACK and self.position[1] != 6:
                 return False
 
         return True
@@ -124,7 +148,7 @@ class Rook(BasePiece):
             return False
 
         # vertical and horizontal validation
-        if not self.validate_vertically(new_position, x, y) and not self.validate_horizontally(new_position, x, y):
+        if not self.validate_vertically(new_position) and not self.validate_horizontally(new_position):
             return False
 
         return True
@@ -160,6 +184,8 @@ class Knight(BasePiece):
         if not self.basic_validate(new_position, x, y):
             return False
 
+        return True
+
 
 class Queen(BasePiece):
     def __init__(self, color, position, board):
@@ -174,8 +200,8 @@ class Queen(BasePiece):
             return False
 
         # horizontal, vertical and diagonal validation
-        if not self.validate_horizontally(new_position, x, y) and \
-                not self.validate_vertically(new_position, x, y) and \
+        if not self.validate_horizontally(new_position) and \
+                not self.validate_vertically(new_position) and \
                 not self.validate_diagonally(new_position, x, y):
             return False
 

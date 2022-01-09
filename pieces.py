@@ -1,4 +1,4 @@
-import operator
+from abc import abstractmethod
 import pygame
 from utils import *
 
@@ -68,6 +68,10 @@ class BasePiece:
             return False
 
         return True
+
+    @abstractmethod
+    def validate_move(self, new_position):
+        raise NotImplementedError
 
     def draw(self, window):
         x = self.position[0] * SQUARE_SIZE

@@ -47,9 +47,8 @@ class Board:
             for col in range(row % 2, ROWS, 2):
                 pygame.draw.rect(window, WHITE_COLOR, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-    def move_piece(self, x, y, new_position):
+    def move_piece(self, piece, new_position):
         # validates the move and updates the board pieces matrix
-        piece = self.pieces[x][y]
         if piece.validate_move(new_position):
             x, y = piece.position
             self.pieces[x][y] = None
@@ -96,7 +95,6 @@ class Board:
     def can_move(self):
         # if all the conditions are met for moving a piece, it moves it and deselects everything
         if self.selected is not None and self.move_attempt is not None:
-            x, y = self.selected.position
-            self.move_piece(x, y, self.move_attempt)
+            self.move_piece(self.selected, self.move_attempt)
             self.selected = None
             self.move_attempt = None

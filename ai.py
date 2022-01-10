@@ -40,5 +40,5 @@ class AI:
 
                     # if it has a valid move, it moves it
                     if move is not None:
-                        board.move_piece(piece.position[0], piece.position[1], move)
+                        board.move_piece(piece, move)
                         return

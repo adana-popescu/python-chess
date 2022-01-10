@@ -61,8 +61,10 @@ def main():
 def player_event(board):
     global run
     for event in pygame.event.get():
+        # if the player closes the window
         if event.type == pygame.QUIT:
             run = False
+            print(f'{"White" if board.turn == WHITE else "Black"} lost!')
 
         # gets move from player and processes it
         if event.type == pygame.MOUSEBUTTONDOWN:

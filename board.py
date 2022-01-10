@@ -1,8 +1,22 @@
+"""
+A class that models the chess board.
+"""
+
 from pieces import *
 
 
 class Board:
+    """
+    The implementation of a chess board.
+    """
+
     def __init__(self):
+        """
+        Class constructor
+        It initializes the board with the pieces hardcoded in the correct position.
+        Sets the current turn to white's turn.
+        """
+
         self.turn = WHITE
         self.selected = None
         self.move_attempt = None
@@ -41,6 +55,13 @@ class Board:
 
     @staticmethod
     def draw_board(window):
+        """
+        A static method that draws the checkered board.
+
+        :param window: the window where it will be drawn
+        :return: None
+        """
+
         # draws the checkered board
         window.fill(BLACK_COLOR)
         for row in range(ROWS):
@@ -48,6 +69,14 @@ class Board:
                 pygame.draw.rect(window, WHITE_COLOR, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def move_piece(self, piece, new_position):
+        """
+        A method that makes a move after it is validated.
+
+        :param piece: the piece to move
+        :param new_position: the position it is trying to move to
+        :return: None
+        """
+
         # validates the move and updates the board pieces matrix
         if piece.validate_move(new_position):
             x, y = piece.position
@@ -65,6 +94,13 @@ class Board:
 
     @staticmethod
     def get_square_from_coords(position):
+        """
+        A static method that determines the matrix position from the mouse coordinates.
+
+        :param position: a tuple consisting of mouse coordinates
+        :return: the column and row of the matrix corresponding to the given coordinates
+        """
+
         # determines which matrix row and column is clicked by getting its coordinates
         x, y = position
         x = x // SQUARE_SIZE
@@ -73,6 +109,17 @@ class Board:
         return x, y
 
     def process_input(self, position):
+        """
+        A method that processes the mouse click input.
+        Calls the get_square_from_coords method in order to determine the click input.
+        It selects a piece if it's the same color as the current turn.
+        It deselects it if it is clicked again.
+        It updates the selected piece and the square it is asked to move to.
+
+        :param position: the position that was clicked
+        :return: None
+        """
+
         # gets the matrix row and number
         x, y = self.get_square_from_coords(position)
 
@@ -93,6 +140,14 @@ class Board:
             self.move_attempt = (x, y)
 
     def can_move(self):
+        """
+        Checks if a move was queued.
+        If both a piece and an end position were selected, it validates the move and clears the selection.
+        If the move is valid, it moves the piece.
+
+        :return: None
+        """
+
         # if all the conditions are met for moving a piece, it moves it and deselects everything
         if self.selected is not None and self.move_attempt is not None:
             self.move_piece(self.selected, self.move_attempt)

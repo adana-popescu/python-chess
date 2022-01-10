@@ -1,3 +1,7 @@
+"""
+Main class responsible for running the game.
+"""
+
 import sys
 from ai import AI
 from board import Board
@@ -6,6 +10,11 @@ from utils import WIDTH, HEIGHT, WHITE
 
 
 def main():
+    """
+    The method where all the game logic is implemented.
+
+    :return: None
+    """
     global run
 
     # checking the run argument, printing usage instructions if invalid
@@ -59,6 +68,12 @@ def main():
 
 
 def player_event(board):
+    """
+    A method that implements a player's turn.
+    :param board: the current board
+    :return: None
+    """
+
     global run
     for event in pygame.event.get():
         # if the player closes the window

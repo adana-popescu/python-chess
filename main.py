@@ -15,6 +15,7 @@ def main():
 
     :return: None
     """
+
     global run
 
     # checking the run argument, printing usage instructions if invalid

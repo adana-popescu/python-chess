@@ -31,6 +31,11 @@ class BasePiece:
         if (x, y) not in self.move_set:
             return False
 
+        # checks if the ending position is not empty and of the opposite color
+        if self.board[new_position[0]][new_position[1]] is not None and \
+                self.board[new_position[0]][new_position[1]].color == self.color:
+            return False
+
         return True
 
     def validate_horizontally(self, new_position):
@@ -43,11 +48,6 @@ class BasePiece:
             if self.board[i][self.position[1]] is not None:
                 return False
 
-        # checks if the ending position is either empty or of the opposite color
-        if self.board[new_position[0]][new_position[1]] is not None and \
-                self.board[new_position[0]][new_position[1]].color == self.color:
-            return False
-
         return True
 
     def validate_vertically(self, new_position):
@@ -59,11 +59,6 @@ class BasePiece:
         for i in range(min(self.position[1], new_position[1]) + 1, max(self.position[1], new_position[1])):
             if self.board[self.position[0]][i] is not None:
                 return False
-
-        # checks if the ending position is either empty or of the opposite color
-        if self.board[new_position[0]][new_position[1]] is not None and \
-                self.board[new_position[0]][new_position[1]].color == self.color:
-            return False
 
         return True
 
@@ -80,11 +75,6 @@ class BasePiece:
                         range(self.position[1] + sign_y, new_position[1], sign_y)):
             if self.board[i][j] is not None:
                 return False
-
-        # checks if the ending position is either empty or of the opposite color
-        if self.board[new_position[0]][new_position[1]] is not None and \
-                self.board[new_position[0]][new_position[1]].color == self.color:
-            return False
 
         return True
 
